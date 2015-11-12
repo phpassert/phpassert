@@ -1,0 +1,19 @@
+{
+  "name": "phpassert/phpassert",
+  "description": "An assertion based testing tool",
+  "minimum-stability": "dev",
+  "license": "MIT",
+  "scripts": {
+    "test": "php run_tests.php"
+  },
+  "authors": [
+    {
+      "name": "Thomas Farla",
+      "email": "thomas@farla.io"
+    }
+  ],
+  "require": {
+    "php": ">=7.0.0",
+    "phpassert/core": "dev-master"
+  }
+}
