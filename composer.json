@@ -4,8 +4,11 @@
   "minimum-stability": "dev",
   "license": "MIT",
   "scripts": {
-    "test": "php phpassert.php test tests"
+    "test": "php phpassert test tests"
   },
+  "bin": [
+    "phpassert"
+  ],
   "authors": [
     {
       "name": "Thomas Farla",
