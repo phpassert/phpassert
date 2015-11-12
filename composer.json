@@ -12,8 +12,17 @@
       "email": "thomas@farla.io"
     }
   ],
+  "autoload": {
+    "psr-4": {
+      "PHPAssert\\Console\\": "src/PHPAssert/Console/"
+    }
+  },
   "require": {
     "php": ">=7.0.0",
-    "phpassert/core": "dev-master"
+    "phpassert/core": "dev-master",
+    "symfony/console": "^2.7"
+  },
+  "require-dev": {
+    "mikey179/vfsStream": "1.6.x-dev"
   }
 }
