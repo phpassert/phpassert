@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "37a586c3573bdad098dfe52321353c9d",
-    "content-hash": "272a95878ad50bb134a523aff5424ec7",
+    "hash": "d061c5a25b33c449d0b3d745d8778f6d",
+    "content-hash": "49aa3bce9014e591e1be777c35d9b311",
     "packages": [
         {
             "name": "anahkiasen/underscore-php",
@@ -290,6 +290,55 @@
             "time": "2015-11-04 00:47:19"
         },
         {
+            "name": "symfony/filesystem",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/filesystem.git",
+                "reference": "232aa96494f0b44d25c8b7a11163c742e568c1a7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/232aa96494f0b44d25c8b7a11163c742e568c1a7",
+                "reference": "232aa96494f0b44d25c8b7a11163c742e568c1a7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.9"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Filesystem\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Filesystem Component",
+            "homepage": "https://symfony.com",
+            "time": "2015-11-10 13:34:42"
+        },
+        {
             "name": "symfony/polyfill-mbstring",
             "version": "dev-master",
             "source": {
@@ -398,6 +447,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "phpassert/core": 20,
+        "symfony/filesystem": 20,
         "mikey179/vfsstream": 20
     },
     "prefer-stable": false,

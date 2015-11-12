@@ -4,7 +4,7 @@
   "minimum-stability": "dev",
   "license": "MIT",
   "scripts": {
-    "test": "php run_tests.php"
+    "test": "php phpassert.php test tests"
   },
   "authors": [
     {
@@ -20,7 +20,8 @@
   "require": {
     "php": ">=7.0.0",
     "phpassert/core": "dev-master",
-    "symfony/console": "^2.7"
+    "symfony/console": "^2.7",
+    "symfony/filesystem": "^3.0@dev"
   },
   "require-dev": {
     "mikey179/vfsStream": "1.6.x-dev"

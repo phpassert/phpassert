@@ -9,6 +9,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class TestCommand extends Command
 {
@@ -16,12 +17,15 @@ class TestCommand extends Command
     {
         $this->setName('test')
             ->setDescription('run all the tests in the specified directory')
-            ->addArgument('path', InputArgument::REQUIRED);
+            ->addArgument('path', InputArgument::OPTIONAL);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $path = $input->getArgument('path');
+        $fs = new Filesystem();
+        $path = $input->getArgument('path') ?? 'tests';
+        $path = $fs->isAbsolutePath($path) ? $path : getcwd() . DIRECTORY_SEPARATOR . $path;
+
         $discoverer = new FSDiscoverer($path);
         $reporter = new ConsoleReporter($output);
         $runner = new Runner($discoverer, $reporter);

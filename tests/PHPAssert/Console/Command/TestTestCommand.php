@@ -1,5 +1,5 @@
 <?php
-namespace PHPAssert\Command;
+namespace test\PHPAssert\Console\Command;
 
 use org\bovigo\vfs\vfsStream;
 use PHPAssert\Console\Command\TestCommand;
