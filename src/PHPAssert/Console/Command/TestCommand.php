@@ -2,8 +2,10 @@
 namespace PHPAssert\Console\Command;
 
 
+use PHPAssert\Console\Errors\FailedTestsException;
 use PHPAssert\Core\Discoverer\FSDiscoverer;
 use PHPAssert\Core\Reporter\ConsoleReporter;
+use PHPAssert\Core\Result\Result;
 use PHPAssert\Core\Runner\Runner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -26,9 +28,13 @@ class TestCommand extends Command
         $path = $input->getArgument('path') ?? 'tests';
         $path = $fs->isAbsolutePath($path) ? $path : getcwd() . DIRECTORY_SEPARATOR . $path;
 
-        $discoverer = new FSDiscoverer($path);
-        $reporter = new ConsoleReporter($output);
-        $runner = new Runner($discoverer, $reporter);
-        $runner->run();
+        $runner = new Runner(new FSDiscoverer($path), new ConsoleReporter($output));
+        $results = $runner->run();
+
+        $failed = array_filter($results, function (Result $result) {
+            return !$result->isSuccess();
+        });
+
+        return intval(count($failed) > 0);
     }
 }
