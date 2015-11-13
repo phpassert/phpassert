@@ -3,10 +3,10 @@ namespace test\PHPAssert\Console\Command;
 
 use org\bovigo\vfs\vfsStream;
 use PHPAssert\Console\Command\TestCommand;
-use PHPAssert\Console\Errors\FailedTestsException;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
+use function PHPAssert\Console\Utils\App\getApp;
 
 class TestTestCommand
 {
@@ -35,50 +35,34 @@ class TestTestCommand
         assert('run all the tests in the specified directory' === $this->command->getDescription());
     }
 
-    function testExecuteOnEmptyDirectory()
+    function testExitCodeOnSuccess()
     {
-        $this->assertExecution([], 'No tests were executed');
-    }
-
-    function testExecuteTest()
-    {
-        $structure = [
+        $commandTester = $this->execute([
             'testSomething.php' => '<?php namespace PHPAssert\examples; function testExecution() {}'
-        ];
-        $expected = 'OK (1 tests)';
-        $this->assertExecution($structure, $expected);
+        ]);
+        assert($commandTester->getStatusCode() === 0);
     }
 
-    function testExecutionShouldThrowExceptionOnFailures()
+    function testExitCodeOnFailure()
     {
-        try {
-            $structure = [
-                'testFail.php' => '<?php namespace PHPAssert\examples; function testFail() {assert(false); }'
-            ];
-            $expected = 'FAIL';
-            $this->assertExecution($structure, $expected);
-        } catch (FailedTestsException $e) {
-        } finally {
-            assert($e ?? false, new \AssertionError('FailedTestsException has not been thrown'));
-        }
+        $commandTester = $this->execute([
+            'testFail.php' => '<?php namespace test\PHPAssert\Console; function testFail() {assert(false);}'
+        ]);
+        assert($commandTester->getStatusCode() === 1);
     }
 
-    function assertExecution(array $fileStructure, \string $expected)
+    private function execute(array $fileStructure)
     {
-        $app = new Application();
-        $app->add($this->command);
-
+        $app = getApp();
         $fs = vfsStream::create($fileStructure, vfsStream::setup());
 
-        $command = $app->find($this->command->getName());
-        $commandTester = new CommandTester($this->command);
+        $command = $app->get($this->command->getName());
+        $commandTester = new CommandTester($command);
         $commandTester->execute([
             'command' => $command->getName(),
             'path' => $fs->url()
         ]);
 
-        $display = $commandTester->getDisplay();
-        assert(strpos($display, $expected),
-            new \AssertionError('Tests are not being executed'));
+        return $commandTester;
     }
 }

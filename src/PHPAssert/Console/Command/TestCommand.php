@@ -35,8 +35,6 @@ class TestCommand extends Command
             return !$result->isSuccess();
         });
 
-        if (count($failed) > 0) {
-            throw new FailedTestsException();
-        }
+        return intval(count($failed) > 0);
     }
 }

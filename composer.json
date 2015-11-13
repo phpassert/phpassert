@@ -18,7 +18,8 @@
   "autoload": {
     "psr-4": {
       "PHPAssert\\Console\\": "src/PHPAssert/Console/"
-    }
+    },
+    "files": ["src/PHPAssert/Console/Utils/App.php"]
   },
   "require": {
     "php": ">=7.0.0",
@@ -27,6 +28,7 @@
     "symfony/filesystem": "^3.0@dev"
   },
   "require-dev": {
-    "mikey179/vfsStream": "1.6.x-dev"
+    "mikey179/vfsStream": "1.6.x-dev",
+    "mockery/mockery": "dev-master"
   }
 }
