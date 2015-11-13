@@ -6,6 +6,7 @@ use PHPAssert\Console\Command\TestCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
+use function PHPAssert\Console\Utils\App\getApp;
 
 class TestTestCommand
 {
@@ -34,36 +35,34 @@ class TestTestCommand
         assert('run all the tests in the specified directory' === $this->command->getDescription());
     }
 
-    function testExecuteOnEmptyDirectory()
+    function testExitCodeOnSuccess()
     {
-        $this->assertExecution([], 'No tests were executed');
-    }
-
-    function testExecuteTest()
-    {
-        $structure = [
+        $commandTester = $this->execute([
             'testSomething.php' => '<?php namespace PHPAssert\examples; function testExecution() {}'
-        ];
-        $expected = 'OK (1 tests)';
-        $this->assertExecution($structure, $expected);
+        ]);
+        assert($commandTester->getStatusCode() === 0);
     }
 
-    function assertExecution(array $fileStructure, \string $expected)
+    function testExitCodeOnFailure()
     {
-        $app = new Application();
-        $app->add($this->command);
+        $commandTester = $this->execute([
+            'testFail.php' => '<?php namespace test\PHPAssert\Console; function testFail() {assert(false);}'
+        ]);
+        assert($commandTester->getStatusCode() === 1);
+    }
 
+    private function execute(array $fileStructure)
+    {
+        $app = getApp();
         $fs = vfsStream::create($fileStructure, vfsStream::setup());
 
-        $command = $app->find($this->command->getName());
-        $commandTester = new CommandTester($this->command);
+        $command = $app->get($this->command->getName());
+        $commandTester = new CommandTester($command);
         $commandTester->execute([
             'command' => $command->getName(),
             'path' => $fs->url()
         ]);
 
-        $display = $commandTester->getDisplay();
-        assert(strpos($display, $expected),
-            new \AssertionError('Tests are not being executed'));
+        return $commandTester;
     }
 }
