@@ -2,7 +2,6 @@
 namespace test\PHPAssert\Console\Command;
 
 use org\bovigo\vfs\vfsStream;
-use PHPAssert\Console\Command\TestCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -11,13 +10,19 @@ use function PHPAssert\Console\Utils\App\getApp;
 class TestTestCommand
 {
     /**
+     * @var Application
+     */
+    private $app;
+
+    /**
      * @var Command
      */
     private $command;
 
     function beforeMethod()
     {
-        $this->command = new TestCommand();
+        $this->app = getApp();
+        $this->command = $this->app->get('test');
     }
 
     function testInstanceOfCommand()
@@ -51,17 +56,23 @@ class TestTestCommand
         assert($commandTester->getStatusCode() === 1);
     }
 
-    private function execute(array $fileStructure)
+    function testBootstrap()
     {
-        $app = getApp();
-        $fs = vfsStream::create($fileStructure, vfsStream::setup());
+        try {
+            $commandTester = $this->execute([], ['--bootstrap' => 'tests/fakebootstrap.php']);
+        } catch (\Exception $e) {
+            assert(false, new \AssertionError($e->getMessage()));
+        }
+    }
 
-        $command = $app->get($this->command->getName());
-        $commandTester = new CommandTester($command);
-        $commandTester->execute([
-            'command' => $command->getName(),
+    private function execute(array $fileStructure, array $options = []): CommandTester
+    {
+        $fs = vfsStream::create($fileStructure, vfsStream::setup(getcwd()));
+        $commandTester = new CommandTester($this->command);
+        $commandTester->execute(array_merge([
+            'command' => $this->command->getName(),
             'path' => $fs->url()
-        ]);
+        ], $options));
 
         return $commandTester;
     }
