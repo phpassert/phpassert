@@ -3,6 +3,7 @@ namespace test\PHPAssert\Console\Command;
 
 use org\bovigo\vfs\vfsStream;
 use PHPAssert\Console\Command\TestCommand;
+use PHPAssert\Console\Errors\FailedTestsException;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -46,6 +47,20 @@ class TestTestCommand
         ];
         $expected = 'OK (1 tests)';
         $this->assertExecution($structure, $expected);
+    }
+
+    function testExecutionShouldThrowExceptionOnFailures()
+    {
+        try {
+            $structure = [
+                'testFail.php' => '<?php namespace PHPAssert\examples; function testFail() {assert(false); }'
+            ];
+            $expected = 'FAIL';
+            $this->assertExecution($structure, $expected);
+        } catch (FailedTestsException $e) {
+        } finally {
+            assert($e ?? false, new \AssertionError('FailedTestsException has not been thrown'));
+        }
     }
 
     function assertExecution(array $fileStructure, \string $expected)
